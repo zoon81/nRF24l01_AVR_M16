@@ -17,16 +17,19 @@ int main(){
     TCCR0 |= BIT(CS02) | BIT(CS00);
     TIMSK = BIT(OCIE0);
 
-    sei();
-    nRF2401_init(NRF_CSN_2, NRF_CE_2 );
+    //External interrupt on low level of INT0
+    MCUCR   |=  BIT(ISC01);
+    GICR    |=  BIT(INT0);
 
+    nRF2401_init(NRF_CSN_2, NRF_CE_2 );
     nRF_2401_reg_read(CONFIG, NRF_CSN_2);
     nRF_2401_reg_read(STATUS, NRF_CSN_2);
     nRF2401_reset_IRQ(NRF_CSN_2);
     nRF2401_set_receiver_mode(NRF_CSN_2, NRF_CE_2);
-
     adc_init();
     UARTInit();
+
+    sei();
 
     while(1){
         UARTSendString("  VR2_x : ");
@@ -45,7 +48,7 @@ ISR(TIMER0_COMPA_vect){
 
 }
 
-ISR(ADC_vect){
-  
+ISR(INT0){
+  nRF2401_receive_payload(NRF_CSN_2, NRF_CE_2, payload);
 
 }

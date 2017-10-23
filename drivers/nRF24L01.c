@@ -21,7 +21,7 @@ void nRF2401_init(uint8_t NRF_CSN, uint8_t NRF_CE) {
 	nRF_2401_reg_write_m(TX_ADDR, device_addr, 5, NRF_CSN);
 
 	nRF_2401_reg_write_s(RX_PW_P0, payload_len, NRF_CSN);	//5byte data in data pipe0 in this case
-	nRF_2401_reg_write_s(CONFIG, 0x1E, NRF_CSN);			//PTX, PWR_UP, CRC_2byte, Enable CRC, No_IRQ
+	nRF_2401_reg_write_s(CONFIG, 0x4F, NRF_CSN);			//PRX, PWR_UP, CRC_2byte, Enable CRC, RX_DR Interrupt
 }
 //Write multiple byte register
 void nRF_2401_reg_write_m(uint8_t reg, uint8_t *value, uint8_t size, uint8_t CSN) {
@@ -87,16 +87,18 @@ void nRF2401_set_receiver_mode(uint8_t CSN, uint8_t CE){
 	SETBIT(PORTB, CE);									// Activate receiver
 }
 //Read the received payload. This function unset the receiving mode too
-void nRF2401_receive_payload(uint8_t CSN, uint8_t CE, uint8_t *buffer){
+void nRF2401_receive_payload(uint8_t CSN, uint8_t CE, struct payload *buffer){
 	while( !(nRF_2401_reg_read(STATUS, CSN) & BIT(RX_DR)) ){  	//wait until payload received and processed
 		_delay_us(10);
 	}
 	CLEARBIT(PORTB, CE);										//Disable receive mode
 	CLEARBIT(PORTB, CSN);
 	spi_transfer(R_RX_PAYLOAD);
-	uint8_t index;
-	for(index=0; index<payload_len; index++){
-		buffer[index] = spi_transfer(NOP);
-	}
+	
+	buffer->header_status = spi_transfer(NOP);
+	buffer->frontlight = spi_transfer(NOP);
+	buffer->speed = spi_transfer(NOP);
+	buffer->direction = spi_transfer(NOP);
+	
 	SETBIT(PORTB, CSN);
 }
