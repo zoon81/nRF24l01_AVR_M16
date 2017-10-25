@@ -13,7 +13,8 @@ void UARTInit()
 	// UCSRA |= (1<<U2X0);
 
 	UCSRB = (1 << RXEN) | (1 << TXEN);
-	UCSRC = (3 << UCSZ0);	//set character size to 8bit
+	// The URSEL must be one when writing the UCSRC.
+	UCSRC|= (1<<URSEL)|(1<<UCSZ0)|(1<<UCSZ1);   // 8bit data format
 }
 uint8_t  UARTReceive()
 {

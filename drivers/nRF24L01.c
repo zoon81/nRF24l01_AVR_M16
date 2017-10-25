@@ -82,8 +82,7 @@ void nRF2401_reset_IRQ(uint8_t CSN){
 	nRF_2401_reg_write_s(STATUS, 0x70, CSN);
 }
 //Set the nRF24l01+ to receive mode
-void nRF2401_set_receiver_mode(uint8_t CSN, uint8_t CE){
-	nRF_2401_reg_write_s(CONFIG, 0x1F, CSN);			//PRX, PWR_UP, CRC_2byte, Enable CRC, No_IRQ
+void nRF2401_set_receiver_mode(uint8_t CE){
 	SETBIT(PORTB, CE);									// Activate receiver
 }
 //Read the received payload. This function unset the receiving mode too

@@ -8,6 +8,8 @@
 #ifndef INC_MAIN_H_
 #define INC_MAIN_H_
 
+#define F_CPU 8000000UL
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -17,6 +19,7 @@
 #include "uart.h"
 #include "adc.h"
 #include "payload_def.h"
+#include "puts.h"
 
 #define BIT(x) (1 << (x))
 #define SETBITS(x, y) ((x) |= (y))

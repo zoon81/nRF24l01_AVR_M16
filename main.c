@@ -7,17 +7,18 @@
 
 #include "main.h"
 
-struct payload payload;
 uint8_t hasnewpackage = 0;
+struct payload payload;
 
 int main()
 {
-
     // Prescaller 1024, CTC mode, interrupt on every ~25ms
+    /*
     OCR0 = 200;
     TCCR0 |= BIT(WGM01);
     TCCR0 |= BIT(CS02) | BIT(CS00);
     TIMSK = BIT(OCIE0);
+    */
 
     //External interrupt on low level of INT2
     //MCUCR   |=  BIT(ISC01);
@@ -27,7 +28,7 @@ int main()
     nRF_2401_reg_read(CONFIG, NRF_CSN_2);
     nRF_2401_reg_read(STATUS, NRF_CSN_2);
     nRF2401_reset_IRQ(NRF_CSN_2);
-    nRF2401_set_receiver_mode(NRF_CSN_2, NRF_CE_2);
+    nRF2401_set_receiver_mode(NRF_CE_2);
 
     UARTInit();
     UARTSendString("HELLO\n\r");
@@ -52,10 +53,6 @@ int main()
     }
 
     return 0;
-}
-
-ISR(TIMER0_COMPA_vect)
-{
 }
 
 ISR(INT2_vect)
