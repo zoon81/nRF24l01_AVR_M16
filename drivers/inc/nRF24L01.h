@@ -109,5 +109,6 @@ void nRF2401_transmit_payload(struct payload *payload, uint8_t CSN, uint8_t NRF_
 void nRF2401_reset_IRQ(uint8_t CSN);
 void nRF2401_set_receiver_mode(uint8_t CE);
 void nRF2401_receive_payload(uint8_t CSN, uint8_t CE, struct payload *buffer);
+void nRF2401_receive_payload_it(uint8_t CSN, uint8_t CE, struct payload *buffer);
 
 #endif /* INC_NRF24L01_H_ */

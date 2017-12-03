@@ -7,7 +7,7 @@
 
 #include "main.h"
 
-uint8_t hasnewpackage = 0;
+volatile uint8_t hasnewpackage = 0;
 struct payload payload;
 
 int main()
@@ -23,21 +23,23 @@ int main()
     //External interrupt on low level of INT2
     //MCUCR   |=  BIT(ISC01);
     GICR |= BIT(INT2);
+    UARTInit();
 
     nRF2401_init(NRF_CSN_2, NRF_CE_2);
-    nRF_2401_reg_read(CONFIG, NRF_CSN_2);
-    nRF_2401_reg_read(STATUS, NRF_CSN_2);
+    UARTSendString("  NRF_Config : ");
+    UARTSend_uint8(nRF_2401_reg_read(CONFIG, NRF_CSN_2));
+    UARTSendString("  NRF_Status : ");
+    UARTSend_uint8(nRF_2401_reg_read(STATUS, NRF_CSN_2));
     nRF2401_reset_IRQ(NRF_CSN_2);
     nRF2401_set_receiver_mode(NRF_CE_2);
-
-    UARTInit();
-    UARTSendString("HELLO\n\r");
-    
     sei();
+    UARTSendString("HELLO\n\r");
     while (1)
     {
         if (hasnewpackage)
         {
+            UARTSendString("  NRF_Status : ");
+            UARTSend_uint8(nRF_2401_reg_read(STATUS, NRF_CSN_2));
             UARTSendString("  Status : ");
             UARTSend_uint8(payload.header_status);
             UARTSendString("  VR2_x : ");
@@ -49,7 +51,6 @@ int main()
             UARTSendString("\n\r");
             hasnewpackage = 0;
         }
-        _delay_ms(50);
     }
 
     return 0;
@@ -57,6 +58,7 @@ int main()
 
 ISR(INT2_vect)
 {
-    nRF2401_receive_payload(NRF_CSN_2, NRF_CE_2, &payload);
+    nRF2401_receive_payload_it(NRF_CSN_2, NRF_CE_2, &payload);
+    nRF2401_set_receiver_mode(NRF_CE_2);
     hasnewpackage = 1;
 }

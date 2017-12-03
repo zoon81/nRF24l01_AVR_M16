@@ -7,15 +7,19 @@
                 "/usr/lib/avr/include/avr",
                 "${workspaceRoot}/inc",
                 "${workspaceRoot}/HAL/inc",
-                "${workspaceRoot}/drivers/inc"
+                "${workspaceRoot}/drivers/inc",
+                "${workspaceRoot}/HAL",
+                "${workspaceRoot}/drivers"
             ],
             "defines": ["__AVR_ATmega16__"],
             "intelliSenseMode": "clang-x64",
             "browse": {
                 "path": [
                     "/usr/lib/avr/include",
+                    "/usr/lib/avr/include/avr",
                     "${workspaceRoot}/inc",
-                    "${workspaceRoot}/utils",
+                    "${workspaceRoot}/HAL/inc",
+                    "${workspaceRoot}/drivers/inc",
                     "${workspaceRoot}/HAL",
                     "${workspaceRoot}/drivers"
                 ],
